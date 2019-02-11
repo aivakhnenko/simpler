@@ -10,8 +10,13 @@ module Simpler
     end
 
     def render(binding)
-      template = plain || File.read(template_path)
-
+      if plain
+        controller.headers['Content-Type'] = 'text/plain'
+        template = plain
+      else
+        controller.headers['Content-Type'] = 'text/html'
+        template = File.read(template_path)
+      end
       ERB.new(template).result(binding)
     end
 
@@ -26,11 +31,11 @@ module Simpler
     end
 
     def template
-      @env['simpler.template']
+      @env['simpler.render_option'][:template]
     end
 
     def plain
-      @env['simpler.plain']
+      @env['simpler.render_option'][:plain]
     end
 
     def template_path

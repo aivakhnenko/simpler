@@ -3,14 +3,15 @@ require_relative 'view'
 module Simpler
   class Controller
 
-    attr_reader :name, :request, :response
-    attr_accessor :headers
+    attr_reader :name, :request
+    attr_accessor :response
+    alias :headers :response
 
     def initialize(env)
       @name = extract_name
       @request = Rack::Request.new(env)
       @response = Rack::Response.new
-      @headers = {}
+      @request.env['simpler.render_option'] = {}
     end
 
     def make_response(action, variables)
@@ -22,7 +23,6 @@ module Simpler
       send(action)
 
       write_response_body
-      commit_headers
 
       @response.finish
     end
@@ -34,11 +34,12 @@ module Simpler
     end
 
     def initialize_variables(variables)
-      variables.each { |key, value| params[key] = value }
+      @request.env['simpler.params'] = @request.params
+      variables.each { |key, value| @request.env['simpler.params'][key] = value }
     end
 
     def set_default_headers
-      @headers['Content-Type'] = 'text/html'
+      headers['Content-Type'] = 'text/html'
     end
 
     def write_response_body
@@ -52,25 +53,16 @@ module Simpler
     end
 
     def params
-      @request.params
+      @request.env['simpler.params']
     end
 
     def render(template = nil, plain: nil)
-      return @request.env['simpler.plain'] = plain if plain
-      @request.env['simpler.template'] = template
+      return @request.env['simpler.render_option'][:plain] = plain if plain
+      @request.env['simpler.render_option'][:template] = template
     end
 
     def status(code)
       @response.status = code
-    end
-
-    def commit_headers
-      @headers.each { |key, value| @response[key] = value }
-    end
-
-    def error_404
-      status 404
-      render plain: "Error 404: Not found"
     end
   end
 end

@@ -17,9 +17,10 @@ class AppLogger
 
   def log(env, status, headers)
     request = Rack::Request.new(env)
+    controller = request.env['simpler.controller']
     @logger.info("Request: #{request.request_method} #{request.fullpath}")
-    @logger.info("Handler: #{request.env['simpler.controller'].class.name}##{request.env['simpler.action']}")
-    @logger.info("Parameters: #{request.env['simpler.controller'].request.params}")
+    @logger.info("Handler: #{controller.class.name if controller}##{request.env['simpler.action']}")
+    @logger.info("Parameters: #{controller.request.params if controller}")
     @logger.info("Response: #{status} #{HTTP::Response::Status::REASONS[status]} [#{headers['Content-Type']}] #{request.env['simpler.template_name']}")
   end
 end

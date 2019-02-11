@@ -2,7 +2,6 @@ class TestsController < Simpler::Controller
 
   def index
     status 201
-    headers['Content-Type'] = 'text/plain'
     render plain: "Plain text response"
   end
 
@@ -11,6 +10,6 @@ class TestsController < Simpler::Controller
   end
 
   def show
-   @test = Test[params[:id]]
+    @test = Test[params[:id]]
   end
 end

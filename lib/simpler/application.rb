@@ -34,11 +34,7 @@ module Simpler
 
       controller = route.controller.new(env)
       action = route.action
-
-      variables = route.variables(path)
-      env['simpler.params'] = variables.each.with_object({}) do |(key, value), env|
-        env[key] = value
-      end
+      env['simpler.params'] = route.variables(path)
 
       make_response(controller, action)
     end

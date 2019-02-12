@@ -114,3 +114,11 @@ I, [2019-02-12T21:52:28.106029 #15848]  INFO -- : Request: GET /tests/1
 I, [2019-02-12T21:52:28.106086 #15848]  INFO -- : Handler: TestsController#show
 I, [2019-02-12T21:52:28.106110 #15848]  INFO -- : Parameters: {}
 I, [2019-02-12T21:52:28.106134 #15848]  INFO -- : Response: 200 OK [text/html] tests/show.html.erb
+I, [2019-02-12T21:56:24.491514 #15914]  INFO -- : Request: GET /tests
+I, [2019-02-12T21:56:24.491620 #15914]  INFO -- : Handler: TestsController#index
+I, [2019-02-12T21:56:24.491679 #15914]  INFO -- : Parameters: {}
+I, [2019-02-12T21:56:24.491711 #15914]  INFO -- : Response: 201 Created [text/plain] 
+I, [2019-02-12T21:56:27.020562 #15914]  INFO -- : Request: GET /tests/1
+I, [2019-02-12T21:56:27.020621 #15914]  INFO -- : Handler: TestsController#show
+I, [2019-02-12T21:56:27.020646 #15914]  INFO -- : Parameters: {}
+I, [2019-02-12T21:56:27.020670 #15914]  INFO -- : Response: 200 OK [text/html] tests/show.html.erb

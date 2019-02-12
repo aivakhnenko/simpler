@@ -18,9 +18,9 @@ module Simpler
       def variables(path)
         path_request = split_path(path)
         path_route = split_path(@path)
-        variables = {}
-        path_route.zip(path_request).each { |route, request| variables[route[1..-1].to_sym] = request if route[0] == ':' }
-        variables
+        path_route.zip(path_request).each.with_object({}) do |(route, request), variables|
+          variables[route[1..-1].to_sym] = request if route[0] == ':'
+        end
       end
 
       private
@@ -29,8 +29,7 @@ module Simpler
         path_request = split_path(path)
         path_route = split_path(@path)
         return false if path_request.count != path_route.count
-        path_route.zip(path_request).each { |route, request| return false if route[0] != ':' && request != route }
-        true
+        path_route.zip(path_request).all? { |route, request| request == route || route[0] == ':' }
       end
 
       def split_path(path)

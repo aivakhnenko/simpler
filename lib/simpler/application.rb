@@ -34,9 +34,13 @@ module Simpler
 
       controller = route.controller.new(env)
       action = route.action
-      variables = route.variables(path)
 
-      make_response(controller, action, variables)
+      variables = route.variables(path)
+      env['simpler.params'] = variables.each.with_object({}) do |(key, value), env|
+        env[key] = value
+      end
+
+      make_response(controller, action)
     end
 
     private
@@ -55,8 +59,8 @@ module Simpler
       @db = Sequel.connect(database_config)
     end
 
-    def make_response(controller, action, variables)
-      controller.make_response(action, variables)
+    def make_response(controller, action)
+      controller.make_response(action)
     end
 
     def response_404

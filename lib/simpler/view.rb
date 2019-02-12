@@ -10,13 +10,7 @@ module Simpler
     end
 
     def render(binding)
-      if plain
-        controller.headers['Content-Type'] = 'text/plain'
-        template = plain
-      else
-        controller.headers['Content-Type'] = 'text/html'
-        template = File.read(template_path)
-      end
+      template = plain || File.read(template_path)
       ERB.new(template).result(binding)
     end
 

@@ -14,10 +14,9 @@ module Simpler
       @request.env['simpler.render_option'] = {}
     end
 
-    def make_response(action, variables)
+    def make_response(action)
       @request.env['simpler.controller'] = self
       @request.env['simpler.action'] = action
-      initialize_variables(variables)
 
       set_default_headers
       send(action)
@@ -31,11 +30,6 @@ module Simpler
 
     def extract_name
       self.class.name.match('(?<name>.+)Controller')[:name].downcase
-    end
-
-    def initialize_variables(variables)
-      @request.env['simpler.params'] = @request.params
-      variables.each { |key, value| @request.env['simpler.params'][key] = value }
     end
 
     def set_default_headers
@@ -53,12 +47,17 @@ module Simpler
     end
 
     def params
-      @request.env['simpler.params']
+      @request.params.merge(@request.env['simpler.params'])
     end
 
-    def render(template = nil, plain: nil)
-      return @request.env['simpler.render_option'][:plain] = plain if plain
-      @request.env['simpler.render_option'][:template] = template
+    def render(template)
+      if (template.is_a?(Hash))
+        headers['Content-Type'] = "text/#{template.keys.first}"
+        @request.env['simpler.render_option'][template.keys.first] = template.values.first
+      else
+        headers['Content-Type'] = 'text/html'
+        @request.env['simpler.render_option'][:template] = template
+      end
     end
 
     def status(code)

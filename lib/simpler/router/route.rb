@@ -33,7 +33,7 @@ module Simpler
       end
 
       def split_path(path)
-        path.split('/') - ['']
+        path.split('/')[1..-1]
       end
     end
   end

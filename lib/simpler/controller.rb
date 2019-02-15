@@ -7,6 +7,8 @@ module Simpler
     attr_accessor :response
     alias :headers :response
 
+    CONTENT_TYPE = { plain: 'plain' }
+
     def initialize(env)
       @name = extract_name
       @request = Rack::Request.new(env)
@@ -50,13 +52,13 @@ module Simpler
       @request.params.merge(@request.env['simpler.params'])
     end
 
-    def render(template)
-      if (template.is_a?(Hash))
-        headers['Content-Type'] = "text/#{template.keys.first}"
-        @request.env['simpler.render_option'][template.keys.first] = template.values.first
+    def render(render_options)
+      if (render_options.is_a?(Hash))
+        headers['Content-Type'] = "text/#{CONTENT_TYPE[render_options.keys.first]}"
+        @request.env['simpler.render_option'][render_options.keys.first] = render_options.values.first
       else
         headers['Content-Type'] = 'text/html'
-        @request.env['simpler.render_option'][:template] = template
+        @request.env['simpler.render_option'][:render_options] = render_options
       end
     end
 
